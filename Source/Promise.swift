@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Promise<T>: AsyncType {
+public class Promise<T>: AsyncType, Equatable {
     public typealias AType = T
 
     fileprivate var promiseProgressCallBack: ((_ resolve: @escaping ((T) -> Void),
@@ -16,6 +16,7 @@ public class Promise<T>: AsyncType {
     _ progress: @escaping ((Float) -> Void)) -> Void)?
     public var state: PromiseState<T> = .pending
     public var progress: Float = 0
+    public let identifier: UUID = UUID()
     internal var blocks = PromiseBlocks<T>()
     fileprivate var initialPromiseStart:(() -> Void)?
     fileprivate var initialPromiseStarted = false
@@ -90,4 +91,8 @@ public class Promise<T>: AsyncType {
         blocks.finally()
         initialPromiseStart = nil
     }
+}
+
+public func ==<T>(lhs: Promise<T>, rhs: Promise<T>) -> Bool {
+    return lhs.identifier == rhs.identifier
 }
